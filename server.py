@@ -5,6 +5,7 @@ from config import app
 import traceback
 from functools import wraps
 from user import service as user_service
+from recipe import service as recipe_service
 custom_exception = [GenericException, AbortException, NotFoundException]
 
 
@@ -80,8 +81,6 @@ def new_user():
 @exception_helper
 @authenticate_helper
 def get_user(email):
-    print(session['username'])
-    print(email)
     if session['username'] != email:
         raise AbortException('not valid user')
     user = user_service.get_user(email=email)
@@ -108,6 +107,53 @@ def login():
 def logout():
     session['login'] = False
     response = ResponseEntity(200)
+    return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
+
+
+@app.route('/recipes', methods=['POST'], strict_slashes=False)
+@exception_helper
+@authenticate_helper
+def create_recipe():
+    data = request.get_json()
+    recipe = recipe_service.create_recipe(queue_number=data['queue_number'], user_id=session['username'])
+    response = ResponseEntity(200, payload=recipe.to_json())
+    return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
+
+
+@app.route('/recipes', methods=['GET'], strict_slashes=False)
+@exception_helper
+@authenticate_helper
+def get_all_recipes():
+    recipes = recipe_service.get_all_recipes()
+    response = ResponseEntity(200, payload=recipes)
+    return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
+
+
+@app.route('/recipes/<queue_number>', methods=['GET'], strict_slashes=False)
+@exception_helper
+@authenticate_helper
+def get_recipe(queue_number):
+    recipe = recipe_service.get_recipe(queue_number)
+    response = ResponseEntity(200, payload=recipe.to_json())
+    return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
+
+
+@app.route('/recipes/<queue_number>', methods=['PUT'], strict_slashes=False)
+@exception_helper
+@authenticate_helper
+def update_recipe(queue_number):
+    data = request.get_json()
+    recipe = recipe_service.update_recipe(queue_number=queue_number, status=data['status'], user_id=session['username'])
+    response = ResponseEntity(200, payload=recipe.to_json())
+    return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
+
+
+@app.route('/recipes/<queue_number>', methods=['DELETE'], strict_slashes=False)
+@exception_helper
+@authenticate_helper
+def delete_recipe(queue_number):
+    recipe = recipe_service.delete_recipe(queue_number)
+    response = ResponseEntity(200, payload=recipe.to_json())
     return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
 
 

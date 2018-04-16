@@ -19,25 +19,33 @@ def create_recipe(queue_number, user_id):
     recipe = Recipe(
         queue_number=recipe['queue_number'],
         status=recipe['status'],
-        date_update=recipe['date_update']
+        date_created=recipe['date_created'],
+        date_update=recipe['date_update'],
+        user_id=recipe['user_id']
     )
     return recipe
 
 
-def update_recipe(queue_number, status):
+def update_recipe(queue_number, status, user_id):
     recipedb = mongo.db.recipes
+    recipe = recipedb.find_one({'queue_number': queue_number})
+    if not recipe:
+        raise NotFoundException('recipe not found')
     recipe = recipedb.find_one_and_update(
         {'queue_number': queue_number},
         {'$set': {
             'status': status,
-            'date_update': datetime.datetime.now()
+            'date_update': datetime.datetime.now(),
+            'user_id': user_id
         }},
         return_document=ReturnDocument.AFTER
     )
     recipe = Recipe(
         queue_number=recipe['queue_number'],
         status=recipe['status'],
-        date_update=recipe['date_update']
+        date_created=recipe['date_created'],
+        date_update=recipe['date_update'],
+        user_id=recipe['user_id']
     )
     return recipe
 
@@ -47,34 +55,42 @@ def delete_recipe(queue_number):
     recipe = recipedb.find_one({'queue_number': queue_number})
     if not recipe:
         raise NotFoundException('recipe not found')
-    recipedb.delete({'_id': recipe['_id']})
+    recipedb.delete_many({'_id': recipe['_id']})
     recipe = Recipe(
         queue_number=recipe['queue_number'],
         status=recipe['status'],
-        date_update=recipe['date_update']
+        date_created=recipe['date_created'],
+        date_update=recipe['date_update'],
+        user_id=recipe['user_id']
     )
     return recipe
 
 
-def get_all_recipe():
+def get_all_recipes():
     recipedb = mongo.db.recipes
-    result = recipedb.find().sort({'date_update': 1})
+    result = recipedb.find().sort([("date_update", -1)])
     recipes = []
-    for recipe in result:
+    for recipe in list(result):
         recipes.append(Recipe(
             queue_number=recipe['queue_number'],
             status=recipe['status'],
-            date_update=recipe['date_update']
-        ))
+            date_created=recipe['date_created'],
+            date_update=recipe['date_update'],
+            user_id=recipe['user_id']
+        ).to_json())
     return recipes
 
 
 def get_recipe(queue_number):
     recipedb = mongo.db.recipes
     recipe = recipedb.find_one({'queue_number': queue_number})
+    if not recipe:
+        raise NotFoundException('recipe not found')
     recipe = Recipe(
         queue_number=recipe['queue_number'],
         status=recipe['status'],
-        date_update=recipe['date_update']
+        date_created=recipe['date_created'],
+        date_update=recipe['date_update'],
+        user_id=recipe['user_id']
     )
     return recipe
