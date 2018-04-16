@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   {% block javascript %}
   <script type="text/javascript">
     {% include "script.js" %}
@@ -43,7 +44,7 @@
         <p>Jl. Gatot Subroto No.28, Gunungsimping, Cilacap Tengah, Kabupaten Cilacap, Jawa Tengah 53211</p>
       </div>
     </div>
-    <button type="button" class="btn btn-primary btn-md"><span class="glyphicon glyphicon-plus"></span>  Tambah Antrian</button>
+    <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#add-antrian"><span class="glyphicon glyphicon-plus"></span>  Tambah Antrian</button>
     <div style="margin:10px"></div>
     <table class="table table-bordered">
       <thead>
@@ -57,6 +58,30 @@
         <!-- this reload by js -->
       </tbody>
     </table>
+  </div>
+
+  <!-- Modal -->
+  <div id="add-antrian" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <form id="add-antrian-form" method="post">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Add Antrian</h4>
+          </div>
+          <div class="modal-body">
+            <input type="text" class="form-control" name="queue_number" placeholder="Nomor Antrian" required="" autofocus="" />
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" type="submit">Add</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
   </div>
 </body>
 </html>

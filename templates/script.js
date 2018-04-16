@@ -37,6 +37,29 @@ $(document).ready(function(){
       }
     })
   });
+
+  $("#add-antrian-form").on('submit', function(e){
+    e.preventDefault();
+    data = {
+      'queue_number': this.queue_number.value
+    }
+    $.ajax({
+      url: 'api/v1/recipes',
+      type : "POST",
+      dataType : 'json',
+      contentType: "application/json; charset=utf-8",
+      data : JSON.stringify(data),
+      success : function(result) {
+        console.log(result);
+        $('#add-antrian').modal('toggle');
+        load_recipe_admin()
+      },
+      error: function(xhr, resp, text) {
+          console.log(xhr, resp, text);
+      }
+    })
+  });
+
 });
 
 
