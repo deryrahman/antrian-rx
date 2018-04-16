@@ -1,4 +1,4 @@
-from flask import Response, request, session
+from flask import Response, request, session, render_template
 import json
 from exception import GenericException, AbortException, NotFoundException
 from config import app
@@ -58,11 +58,23 @@ class ResponseEntity():
 
 @app.route('/', methods=['GET'], strict_slashes=False)
 def home():
-    response = ResponseEntity(200, message="bum", payload=[1, 2, 3])
+    return render_template('index.html')
+
+
+@app.route('/admin', strict_slashes=False)
+def admin():
+    if 'username' not in session:
+        return render_template('login.html')
+    return render_template('admin.html')
+
+
+@app.route('/api', methods=['GET'], strict_slashes=False)
+def api():
+    response = ResponseEntity(200, message="API Antrian Recipe RSUD Cilacap", payload={'version:': 1.0})
     return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
 
 
-@app.route('/users', methods=['POST'], strict_slashes=False)
+@app.route('/api/v1/users', methods=['POST'], strict_slashes=False)
 @exception_helper
 @authenticate_helper
 def new_user():
@@ -77,7 +89,7 @@ def new_user():
     return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
 
 
-@app.route('/users/<email>', methods=['GET'], strict_slashes=False)
+@app.route('/api/v1/users/<email>', methods=['GET'], strict_slashes=False)
 @exception_helper
 @authenticate_helper
 def get_user(email):
@@ -88,10 +100,11 @@ def get_user(email):
     return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
 
 
-@app.route('/login', methods=['POST'], strict_slashes=False)
+@app.route('/api/v1/login', methods=['POST'], strict_slashes=False)
 @exception_helper
 def login():
     data = request.get_json()
+    print(data)
     user = user_service.authenticate(email=data['email'], password=data['password'])
     if user:
         session['login'] = True
@@ -101,7 +114,7 @@ def login():
     return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
 
 
-@app.route('/logout', methods=['GET'], strict_slashes=False)
+@app.route('/api/v1/logout', methods=['GET'], strict_slashes=False)
 @exception_helper
 @authenticate_helper
 def logout():
@@ -110,7 +123,7 @@ def logout():
     return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
 
 
-@app.route('/recipes', methods=['POST'], strict_slashes=False)
+@app.route('/api/v1/recipes', methods=['POST'], strict_slashes=False)
 @exception_helper
 @authenticate_helper
 def create_recipe():
@@ -120,16 +133,15 @@ def create_recipe():
     return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
 
 
-@app.route('/recipes', methods=['GET'], strict_slashes=False)
+@app.route('/api/v1/recipes', methods=['GET'], strict_slashes=False)
 @exception_helper
-@authenticate_helper
 def get_all_recipes():
     recipes = recipe_service.get_all_recipes()
     response = ResponseEntity(200, payload=recipes)
     return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
 
 
-@app.route('/recipes/<queue_number>', methods=['GET'], strict_slashes=False)
+@app.route('/api/v1/recipes/<queue_number>', methods=['GET'], strict_slashes=False)
 @exception_helper
 @authenticate_helper
 def get_recipe(queue_number):
@@ -138,7 +150,7 @@ def get_recipe(queue_number):
     return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
 
 
-@app.route('/recipes/<queue_number>', methods=['PUT'], strict_slashes=False)
+@app.route('/api/v1/recipes/<queue_number>', methods=['PUT'], strict_slashes=False)
 @exception_helper
 @authenticate_helper
 def update_recipe(queue_number):
@@ -148,7 +160,7 @@ def update_recipe(queue_number):
     return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
 
 
-@app.route('/recipes/<queue_number>', methods=['DELETE'], strict_slashes=False)
+@app.route('/api/v1/recipes/<queue_number>', methods=['DELETE'], strict_slashes=False)
 @exception_helper
 @authenticate_helper
 def delete_recipe(queue_number):

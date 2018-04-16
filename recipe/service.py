@@ -13,7 +13,7 @@ def create_recipe(queue_number, user_id):
         'queue_number': queue_number,
         'date_created': datetime.datetime.now(),
         'date_update': datetime.datetime.now(),
-        'status': 0,
+        'status': 1,
         'user_id': user_id})
     recipe = recipedb.find_one({'_id': recipe_id})
     recipe = Recipe(
@@ -68,7 +68,7 @@ def delete_recipe(queue_number):
 
 def get_all_recipes():
     recipedb = mongo.db.recipes
-    result = recipedb.find().sort([("date_update", -1)])
+    result = recipedb.find().sort([("status", -1)])
     recipes = []
     for recipe in list(result):
         recipes.append(Recipe(
