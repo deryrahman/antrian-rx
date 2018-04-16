@@ -63,9 +63,15 @@ def home():
 
 @app.route('/users', methods=['POST'], strict_slashes=False)
 @exception_helper
+@authenticate_helper
 def new_user():
+    if session['role'] != 'admin':
+        raise AbortException('only admin can create user')
     data = request.get_json()
-    new_user = user_service.create_user(name=data['name'], email=data['email'], password=data['password'])
+    role = None
+    if 'role' in data:
+        role = data['role']
+    new_user = user_service.create_user(name=data['name'], email=data['email'], role=role, password=data['password'])
     response = ResponseEntity(200, payload=new_user.to_json())
     return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
 
@@ -74,7 +80,9 @@ def new_user():
 @exception_helper
 @authenticate_helper
 def get_user(email):
-    if session['username'] is not email:
+    print(session['username'])
+    print(email)
+    if session['username'] != email:
         raise AbortException('not valid user')
     user = user_service.get_user(email=email)
     response = ResponseEntity(200, payload=user.to_json())
@@ -85,11 +93,12 @@ def get_user(email):
 @exception_helper
 def login():
     data = request.get_json()
-    is_valid = user_service.authenticate(email=data['email'], password=data['password'])
-    if is_valid:
+    user = user_service.authenticate(email=data['email'], password=data['password'])
+    if user:
         session['login'] = True
-        session['username'] = data['email']
-    response = ResponseEntity(200)
+        session['username'] = user.email
+        session['role'] = user.role
+    response = ResponseEntity(200, payload=user.to_json())
     return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
 
 

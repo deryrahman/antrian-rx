@@ -5,7 +5,7 @@ from exception import AbortException, NotFoundException
 import re
 
 
-def create_user(name, email, password):
+def create_user(name, email, role, password):
     user = mongo.db.users
     user.create_index([('email', pymongo.TEXT)], unique=True)
     pw_hash = bcrypt.generate_password_hash(password)
@@ -13,11 +13,11 @@ def create_user(name, email, password):
     if not pattern.match(email):
         raise AbortException("email not valid")
     try:
-        user_id = user.insert({'name': name, 'email': email, 'password': pw_hash})
+        user_id = user.insert({'name': name, 'email': email, 'role': role, 'password': pw_hash})
     except Exception as e:
         raise AbortException("email {} already exist".format(email))
     new_user = user.find_one({'_id': user_id})
-    new_user = User(name=new_user['name'], email=new_user['email'])
+    new_user = User(name=new_user['name'], role=new_user['role'], email=new_user['email'])
     return new_user
 
 
@@ -26,7 +26,7 @@ def get_user(email):
     user = user.find_one({'email': email})
     if not user:
         raise NotFoundException("user with email {} not found".format(email))
-    user = User(name=user['name'], email=user['email'])
+    user = User(name=user['name'], role=user['role'], email=user['email'])
     return user
 
 
@@ -36,5 +36,6 @@ def authenticate(email, password):
     if not user:
         raise NotFoundException("user with email {} not found".format(email))
     if bcrypt.check_password_hash(user['password'], password):
-        return True
+        user = User(name=user['name'], role=user['role'], email=user['email'])
+        return user
     raise AbortException("password not match")
