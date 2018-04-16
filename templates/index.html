@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Login</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
   {% block javascript %}
@@ -12,6 +12,7 @@
     {% include "script.js" %}
   </script>
   <script type="text/javascript">
+    load_recipe()
     window.setInterval(function(){
       load_recipe()
     }, 5000);
@@ -20,31 +21,38 @@
 </head>
 
 <body>
+  <nav class="navbar navbar-inverse navbar-static-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">Apotek RSUD Cilacap</a>
+      </div>
+      <ul class="nav navbar-nav navbar-right">
+        {% if 'username' in session: %}
+        <li><a href="/admin">{{session['username']}}</a></li>
+        <li><a id="logout" href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+        {% else %}
+        <li><a href="/admin"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
   <div class="container wrapper">
-    <table class="table">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">Tanggal</th>
+    <div class="container">
+      <div class="jumbotron">
+        <h1>RSUD Cilacap</h1>
+        <p>Jl. Gatot Subroto No.28, Gunungsimping, Cilacap Tengah, Kabupaten Cilacap, Jawa Tengah 53211</p>
+      </div>
+    </div>
+    <table class="table table-bordered">
+      <thead>
+        <tr class="bg-dark">
           <th scope="col">Nomor Antrian</th>
+          <th scope="col">Tanggal</th>
           <th scope="col">Status</th>
         </tr>
       </thead>
       <tbody id="recipe-table">
-        <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-          <td>Thornton</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Larry</td>
-          <td>the Bird</td>
-        </tr>
+        <!-- this reload by js -->
       </tbody>
     </table>
   </div>

@@ -1,4 +1,4 @@
-from flask import Response, request, session, render_template
+from flask import Response, request, session, render_template, url_for
 import json
 from exception import GenericException, AbortException, NotFoundException
 from config import app
@@ -6,7 +6,23 @@ import traceback
 from functools import wraps
 from user import service as user_service
 from recipe import service as recipe_service
+import os
 custom_exception = [GenericException, AbortException, NotFoundException]
+
+
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
+
+
+def dated_url_for(endpoint, **values):
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path,
+                                     endpoint, filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
 
 
 @app.errorhandler(GenericException)
@@ -104,7 +120,6 @@ def get_user(email):
 @exception_helper
 def login():
     data = request.get_json()
-    print(data)
     user = user_service.authenticate(email=data['email'], password=data['password'])
     if user:
         session['login'] = True
@@ -118,7 +133,9 @@ def login():
 @exception_helper
 @authenticate_helper
 def logout():
-    session['login'] = False
+    session.pop('login', None)
+    session.pop('username', None)
+    session.pop('role', None)
     response = ResponseEntity(200)
     return Response(json.dumps(response.to_json()), status=response.status, mimetype='application/json')
 
