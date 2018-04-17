@@ -4,7 +4,7 @@ from flask_bcrypt import Bcrypt
 import os
 
 app = Flask(__name__)
-app.config['DEBUG'] = os.environ['DEBUG']
+app.config['DEBUG'] = os.environ.get('DEBUG', False)
 app.config['MONGO_DBNAME'] = os.environ['MONGO_DBNAME']
 app.config['MONGO_URI'] = os.environ['MONGO_URI']
 app.secret_key = os.environ['SECRET_KEY']
