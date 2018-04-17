@@ -72,10 +72,10 @@ function load_recipe(){
           if(recipe['status'] > 0){
               color = "warning"
               if(recipe['status'] == 1){
-                recipe['status'] = 'pending';
+                recipe['status'] = 'proses';
               } else if(recipe['status'] == 2){
                 color = "success"
-                recipe['status'] = 'ready';
+                recipe['status'] = 'siap';
               }
               items += "<tr class='"+color+"'><th scope='row'>"+recipe['queue_number']+"</th><td>"+recipe['date_update']+"</td><td>"+recipe['status']+"</td></tr>"
           }
@@ -89,7 +89,7 @@ function load_recipe(){
 
 function update(queue_number, status){
   data = {
-    'status': status
+    'status': parseInt(status)
   }
   $.ajax({
     url: 'api/v1/recipes/' + queue_number,
@@ -121,18 +121,19 @@ function load_recipe_admin(){
             if(recipe['status'] == 1){
               color = "warning"
               tag_pending = "disabled"
-              recipe['status'] = 'pending';
+              recipe['status'] = 'proses';
             } else if(recipe['status'] == 2){
               color = "success"
               tag_ready = "disabled"
-              recipe['status'] = 'ready';
+              recipe['status'] = 'siap';
             } else {
               tag_finish = "disabled"
+              recipe['status'] = 'selesai';
             }
             items += "<tr class='"+color+"'><th scope='row'>"+recipe['queue_number']+"</th><td>"+recipe['date_update']+"</td>"
-            pending = "<button "+tag_pending+" class='btn btn-primary'><span class='glyphicon glyphicon-refresh'></span>  Pending</button>"
-            ready = "<button "+tag_ready+" class='btn btn-primary'><span class='glyphicon glyphicon-ok'></span>  Ready</a>"
-            finish = "<button "+tag_finish+" class='btn btn-primary'><span class='glyphicon glyphicon-flag'></span>  Finish</button>"
+            pending = "<button "+tag_pending+" class='btn btn-primary'><span class='glyphicon glyphicon-refresh'></span>  Proses</button>"
+            ready = "<button "+tag_ready+" class='btn btn-primary'><span class='glyphicon glyphicon-ok'></span>  Siap</a>"
+            finish = "<button "+tag_finish+" class='btn btn-primary'><span class='glyphicon glyphicon-flag'></span>  Selesai</button>"
             button = "<div class='btn-group' style='margin:0px 20px;'>"+pending+ready+finish+"</div>"
             items += "<td>"+button+"</td></tr>"
         })
