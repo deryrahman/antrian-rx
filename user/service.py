@@ -6,6 +6,7 @@ import re
 
 
 def create_user(name, email, role, password):
+    email = email.replace(' ', '')
     user = mongo.db.users
     user.create_index([('email', pymongo.TEXT)], unique=True)
     pw_hash = bcrypt.generate_password_hash(password)
@@ -22,6 +23,7 @@ def create_user(name, email, role, password):
 
 
 def get_user(email):
+    email = email.replace(' ', '')
     user = mongo.db.users
     user = user.find_one({'email': email})
     if not user:
@@ -31,12 +33,9 @@ def get_user(email):
 
 
 def authenticate(email, password):
+    email = email.replace(' ', '')
     user = mongo.db.users
-    print(mongo)
-    print(email)
-    print(user)
     user = user.find_one({'email': email})
-    print(user)
     if not user:
         raise NotFoundException("user with email {} not found".format(email))
     if bcrypt.check_password_hash(user['password'], password):
