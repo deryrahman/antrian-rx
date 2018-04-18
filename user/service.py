@@ -32,7 +32,9 @@ def get_user(email):
 
 def authenticate(email, password):
     user = mongo.db.users
+    print(mongo)
     print(email)
+    print(user)
     user = user.find_one({'email': email})
     print(user)
     if not user:
