@@ -8,6 +8,13 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+  <!-- (Optional) Latest compiled and minified JavaScript translation files -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/i18n/defaults-*.min.js"></script>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   {% block javascript %}
   <script type="text/javascript">
@@ -46,6 +53,9 @@
       </div>
     </div>
     <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#add-antrian"><span class="glyphicon glyphicon-plus"></span>  Tambah Antrian</button>
+    {% if 'role' in session and session['role'] == 'admin': %}
+    <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#add-user"><span class="glyphicon glyphicon-plus"></span>  Tambah User</button>
+    {% endif %}
     <div style="margin:10px"></div>
     <table class="table table-bordered">
       <thead>
@@ -70,7 +80,7 @@
         <form id="add-antrian-form" method="post">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Add Antrian</h4>
+            <h4 class="modal-title">Tambah Antrian</h4>
           </div>
           <div class="modal-body">
             <input type="text" class="form-control" name="queue_number" placeholder="Nomor Antrian" required="" autofocus="" />
@@ -84,5 +94,36 @@
 
     </div>
   </div>
+
+  {% if 'role' in session and session['role'] == 'admin': %}
+  <div id="add-user" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <form id="add-user-form" class="form-user" method="post">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Tambah User</h4>
+          </div>
+          <div class="modal-body">
+            <input type="text" class="form-control top" name="name" placeholder="Nama user" required="" autofocus="" />
+            <input type="text" class="form-control middle" name="email" placeholder="Email user" required="" autofocus="" />
+            <input type="password" class="form-control bottom" name="password" placeholder="Password user" required="" autofocus="" />
+            <select name="role" class="selectpicker" data-width="100%" title="Role">
+              <option>Admin</option>
+              <option>User</option>
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" type="submit">Add</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+  {% endif %}
 </body>
 </html>

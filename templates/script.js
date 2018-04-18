@@ -60,6 +60,35 @@ $(document).ready(function(){
     })
   });
 
+  $("#add-user-form").on('submit', function(e){
+    e.preventDefault();
+    if(this.role.value == 'admin'){
+      data['role'] = 'admin'
+    }
+    data = {
+    	'name': this.name.value,
+    	'email': this.email.value,
+    	'password': this.password.value,
+    	'role': this.role.value
+    }
+    $.ajax({
+      url: 'api/v1/users',
+      type : "POST",
+      dataType : 'json',
+      contentType: "application/json; charset=utf-8",
+      data : JSON.stringify(data),
+      success : function(result) {
+        console.log(result);
+        $('#add-user').modal('toggle');
+        alert('success add ' + this.email.value);
+        window.location.replace('admin')
+      },
+      error: function(xhr, resp, text) {
+          console.log(xhr, resp, text);
+      }
+    })
+  });
+
 });
 
 

@@ -50,14 +50,32 @@ body {
 }
 
 .jumbotron {
-    padding: 0.5em 0.6em;
-    h1 {
-        font-size: 2em;
-    }
-    p {
-        font-size: 1.2em;
-        .btn {
-            padding: 0.5em;
-        }
-    }
+  padding: 0.5em 0.6em;
+}
+.jumbotron h1 {
+  font-size: 2em;
+}
+.jumbotron p {
+  font-size: 1.2em;
+}
+.jumbotron p .btn {
+  padding: 0.5em;
+}
+
+.form-user .top {
+  margin-bottom: -1px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.form-user .middle {
+  margin-bottom: -1px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.form-user .bottom {
+  margin-bottom: 20px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
