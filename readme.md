@@ -22,7 +22,7 @@ RSUD Cilacap bagian farmasi
     ```
     $ gunicorn server:app :8000 -n antrian-rx
     ```
-Aplikasi akan berjalan di port 8000, eg. `http://localhost:8000`
+    Aplikasi akan berjalan di port 8000, eg. `http://localhost:8000`
 6. Untuk mematikan, ctrl+C
 7. Untuk menjalankan aplikasi pada background proses, jalankan `start.sh`, run command:
     ```
