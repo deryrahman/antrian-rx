@@ -5,6 +5,7 @@ $(document).ready(function(){
       'email': this.email.value,
       'password': this.password.value
     }
+    $('#error-message').hide()
     $.ajax({
       url: 'api/v1/login',
       type : "POST",
@@ -16,7 +17,10 @@ $(document).ready(function(){
         window.location.replace('admin')
       },
       error: function(xhr, resp, text) {
-          console.log(xhr, resp, text);
+        console.log(xhr, resp, text);
+        response = JSON.parse(xhr.responseText)
+        $('#error-message').append(response['msg'])
+        $('#error-message').show()
       }
     })
   });
