@@ -19,6 +19,7 @@ $(document).ready(function(){
       error: function(xhr, resp, text) {
         console.log(xhr, resp, text);
         response = JSON.parse(xhr.responseText)
+        $('#error-message').empty()
         $('#error-message').append(response['msg'])
         $('#error-message').show()
       }
