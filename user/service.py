@@ -32,7 +32,9 @@ def get_user(email):
 
 def authenticate(email, password):
     user = mongo.db.users
+    print(email)
     user = user.find_one({'email': email})
+    print(user)
     if not user:
         raise NotFoundException("user with email {} not found".format(email))
     if bcrypt.check_password_hash(user['password'], password):
