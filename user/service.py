@@ -8,7 +8,7 @@ import re
 def create_user(name, email, role, password):
     email = email.replace(' ', '')
     user = mongo.db.users
-    user.create_index([('email', pymongo.TEXT)], unique=True)
+    # user.create_index([('email', pymongo.TEXT)], unique=True)
     pw_hash = bcrypt.generate_password_hash(password)
     pattern = re.compile("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
     if not pattern.match(email):
