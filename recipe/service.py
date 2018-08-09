@@ -3,16 +3,22 @@ from .model import Recipe
 from pymongo import ReturnDocument
 import pymongo
 import datetime
+from dateutil import tz
 from exception import AbortException, NotFoundException
+from_zone = tz.gettz('UTC')
+to_zone = tz.gettz('Asia/Jakarta')
 
 
 def create_recipe(queue_number, user_id):
     recipedb = mongo.db.recipes
     recipedb.create_index([('queue_number', pymongo.TEXT)], unique=True)
+    utc = datetime.utcnow()
+    utc = utc.replace(tzinfo=from_zone)
+    date_now = utc.astimezone(to_zone)
     recipe_id = recipedb.insert({
         'queue_number': queue_number,
-        'date_created': datetime.datetime.now(),
-        'date_update': datetime.datetime.now(),
+        'date_created': date_now,
+        'date_update': date_now,
         'status': 1,
         'user_id': user_id})
     recipe = recipedb.find_one({'_id': recipe_id})
@@ -31,15 +37,20 @@ def update_recipe(queue_number, status, user_id):
     recipe = recipedb.find_one({'queue_number': queue_number})
     if not recipe:
         raise NotFoundException('recipe not found')
+    utc = datetime.utcnow()
+    utc = utc.replace(tzinfo=from_zone)
+    date_now = utc.astimezone(to_zone)
+
     recipe = recipedb.find_one_and_update(
         {'queue_number': queue_number},
         {'$set': {
             'status': status,
-            'date_update': datetime.datetime.now(),
+            'date_update': date_now,
             'user_id': user_id
         }},
         return_document=ReturnDocument.AFTER
     )
+
     recipe = Recipe(
         queue_number=recipe['queue_number'],
         status=recipe['status'],
