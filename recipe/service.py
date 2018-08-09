@@ -12,7 +12,7 @@ to_zone = tz.gettz('Asia/Jakarta')
 def create_recipe(queue_number, user_id):
     recipedb = mongo.db.recipes
     recipedb.create_index([('queue_number', pymongo.TEXT)], unique=True)
-    utc = datetime.utcnow()
+    utc = datetime.datetime.now()
     utc = utc.replace(tzinfo=from_zone)
     date_now = utc.astimezone(to_zone)
     recipe_id = recipedb.insert({
@@ -37,7 +37,7 @@ def update_recipe(queue_number, status, user_id):
     recipe = recipedb.find_one({'queue_number': queue_number})
     if not recipe:
         raise NotFoundException('recipe not found')
-    utc = datetime.utcnow()
+    utc = datetime.datetime.now()
     utc = utc.replace(tzinfo=from_zone)
     date_now = utc.astimezone(to_zone)
 
