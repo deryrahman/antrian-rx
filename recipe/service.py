@@ -3,6 +3,7 @@ from .model import Recipe
 from pymongo import ReturnDocument
 import pymongo
 import datetime
+from datetime import timedelta
 from dateutil import tz
 from exception import AbortException, NotFoundException
 from_zone = tz.gettz('UTC')
@@ -81,12 +82,22 @@ def get_all_recipes():
     recipedb = mongo.db.recipes
     result = recipedb.find().sort([("status", -1)])
     recipes = []
+    date_now = datetime.datetime.now()
     for recipe in list(result):
+        # only show receipt above 3 days before
+        date_3_before = date_now - timedelta(days=3)
+        receipt_date = datetime.datetime.strptime(
+            recipe['date_update'].strftime(
+                "%H:%M:%S %d-%m-%Y"), '%H:%M:%S %d-%m-%Y')
+        if (receipt_date < date_3_before) and recipe['status']==0:
+            continue
         recipes.append(Recipe(
             queue_number=recipe['queue_number'],
             status=recipe['status'],
-            date_created=recipe['date_created'],
-            date_update=recipe['date_update'],
+            date_created=recipe['date_created'].strftime(
+                "%H:%M:%S %d-%m-%Y"),
+            date_update=recipe['date_update'].strftime(
+                "%H:%M:%S %d-%m-%Y"),
             user_id=recipe['user_id']
         ).to_json())
     return recipes
@@ -100,8 +111,10 @@ def get_recipe(queue_number):
     recipe = Recipe(
         queue_number=recipe['queue_number'],
         status=recipe['status'],
-        date_created=recipe['date_created'],
-        date_update=recipe['date_update'],
+        date_created=recipe['date_created'].strftime(
+            "%H:%M:%S %d-%m-%Y"),
+        date_update=recipe['date_update'].strftime(
+            "%H:%M:%S %d-%m-%Y"),
         user_id=recipe['user_id']
     )
     return recipe
