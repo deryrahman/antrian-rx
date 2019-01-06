@@ -84,12 +84,12 @@ def get_all_recipes():
     recipes = []
     date_now = datetime.datetime.now()
     for recipe in list(result):
-        # only show receipt above 3 days before
-        date_3_before = date_now - timedelta(days=3)
+        # only show receipt above 1 days before
+        date_before = date_now - timedelta(days=1)
         receipt_date = datetime.datetime.strptime(
             recipe['date_update'].strftime(
                 "%H:%M:%S %d-%m-%Y"), '%H:%M:%S %d-%m-%Y')
-        if (receipt_date < date_3_before) and recipe['status']==0:
+        if (receipt_date < date_before):
             continue
         recipes.append(Recipe(
             queue_number=recipe['queue_number'],
