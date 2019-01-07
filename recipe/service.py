@@ -95,9 +95,9 @@ def get_all_recipes():
             queue_number=recipe['queue_number'],
             status=recipe['status'],
             date_created=recipe['date_created'].strftime(
-                "%H:%M:%S %d-%m-%Y"),
+                "%%d-%m-%Y H:%M:%S"),
             date_update=recipe['date_update'].strftime(
-                "%H:%M:%S %d-%m-%Y"),
+                "%d-%m-%Y %H:%M:%S"),
             user_id=recipe['user_id']
         ).to_json())
     return recipes
