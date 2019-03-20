@@ -1,4 +1,4 @@
-from config import mongo
+from app import mongo
 from .model import Recipe
 from pymongo import ReturnDocument
 import pymongo

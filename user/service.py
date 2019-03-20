@@ -1,4 +1,4 @@
-from config import mongo, bcrypt
+from app import mongo, bcrypt
 from .model import User
 import pymongo
 from exception import AbortException, NotFoundException

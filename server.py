@@ -1,7 +1,7 @@
 from flask import Response, request, session, render_template, url_for
 import json
 from exception import GenericException, AbortException, NotFoundException
-from config import app
+from app import app
 import traceback
 from functools import wraps
 from user import service as user_service
