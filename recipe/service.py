@@ -90,6 +90,8 @@ def get_all_recipes():
             recipe['date_update'].strftime(
                 "%H:%M:%S %d-%m-%Y"), '%H:%M:%S %d-%m-%Y')
         if (receipt_date < date_before):
+            # delete receipt
+            recipedb.delete_many({'_id': recipe['_id']})
             continue
         recipes.append(Recipe(
             queue_number=recipe['queue_number'],
