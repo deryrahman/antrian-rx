@@ -13,11 +13,13 @@ class NotFoundException(GenericException):
     status_code = 404
 
     def __init__(self, message, payload=None):
-        GenericException.__init__(self, message, status_code=NotFoundException.status_code, payload=payload)
+        GenericException.__init__(
+            self, message, status_code=NotFoundException.status_code, payload=payload)
 
 
 class AbortException(GenericException):
     status_code = 400
 
     def __init__(self, message, payload=None):
-        GenericException.__init__(self, message, status_code=AbortException.status_code, payload=payload)
+        GenericException.__init__(
+            self, message, status_code=AbortException.status_code, payload=payload)

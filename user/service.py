@@ -14,11 +14,13 @@ def create_user(name, email, role, password):
     if not pattern.match(email):
         raise AbortException("email not valid")
     try:
-        user_id = user.insert({'name': name, 'email': email, 'role': role, 'password': pw_hash})
+        user_id = user.insert(
+            {'name': name, 'email': email, 'role': role, 'password': pw_hash})
     except Exception as e:
         raise AbortException("email {} already exist".format(e))
     new_user = user.find_one({'_id': user_id})
-    new_user = User(name=new_user['name'], role=new_user['role'], email=new_user['email'])
+    new_user = User(name=new_user['name'],
+                    role=new_user['role'], email=new_user['email'])
     return new_user
 
 
