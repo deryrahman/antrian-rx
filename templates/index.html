@@ -39,16 +39,24 @@
   </nav>
   <div class="container wrapper">
     <div class="container">
-      <div class="jumbotron">
-        <h1>RSUD Cilacap</h1>
-        <p>Jl. Gatot Subroto No.28, Gunungsimping, Cilacap Tengah, Kabupaten Cilacap, Jawa Tengah 53211</p>
-        <div class="alert alert-warning" role="alert">
-          Tampilan nomor antrian ini hanya untuk nomor antrian pada hari ini. Untuk pengambilan obat hari sebelumnya silahkan langsung ke
-          petugas. Terima kasih :)
+      <div class="row mb-md-2">
+        <div class="col-md-2 text-center">
+          <img src="{{ url_for('static', filename='logo.png') }}" />
+        </div>
+        <div class="col-md-10">
+          <div class="jumbotron">
+            <h1>RSUD Cilacap</h1>
+            <p>Jl. Gatot Subroto No.28, Gunungsimping, Cilacap Tengah, Kabupaten Cilacap, Jawa Tengah 53211</p>
+            <div class="alert alert-warning" role="alert">
+              Tampilan nomor antrian ini hanya untuk nomor antrian pada hari ini. Untuk pengambilan obat hari sebelumnya silahkan
+              langsung ke
+              petugas. Terima kasih :)
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <table class="table table-bordered">
+    <table class="table table-bordered" style="margin-top: 20px;">
       <thead>
         <tr class="bg-dark">
           <th scope="col">Nomor Antrian</th>
