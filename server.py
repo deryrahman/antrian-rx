@@ -1,12 +1,15 @@
 import os
 import json
 import traceback
+from dateutil import tz
+from datetime import datetime
 from functools import wraps
 from flask import Response, request, session, render_template, url_for
 from exception import GenericException, AbortException, NotFoundException
 from app import app
 from user import service as user_service
 from recipe import service as recipe_service
+from counter import service as counter_service
 custom_exception = [GenericException, AbortException, NotFoundException]
 
 
@@ -77,6 +80,10 @@ class ResponseEntity():
 
 @app.route('/', methods=['GET'], strict_slashes=False)
 def home():
+    remote_addr = request.remote_addr
+    print(remote_addr)
+    if not counter_service.is_unique(remote_addr):
+        counter_service.hit()
     return render_template('index.html')
 
 
@@ -211,6 +218,18 @@ def update_recipe(queue_number):
 def delete_recipe(queue_number):
     recipe = recipe_service.delete_recipe(queue_number)
     response = ResponseEntity(200, payload=recipe.to_json())
+    return Response(json.dumps(response.to_json()),
+                    status=response.status, mimetype='application/json')
+
+
+@app.route('/api/v1/counters',
+           methods=['GET'], strict_slashes=False)
+@exception_helper
+@authenticate_helper
+def get_counter():
+    today = datetime.now(tz.gettz('Asia/Jakarta')).strftime('%Y-%m-%d')
+    counter = counter_service.get_count(today)
+    response = ResponseEntity(200, payload=counter.to_json())
     return Response(json.dumps(response.to_json()),
                     status=response.status, mimetype='application/json')
 

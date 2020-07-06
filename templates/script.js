@@ -177,3 +177,15 @@ function load_recipe_admin(){
     $('#recipe-table').append(items)
   });
 }
+
+function load_visitor_count(){
+  $.getJSON('api/v1/counters', function(data) {
+    count = 0
+    $.each(data, function(key,val){
+      if(key=='payload'){
+        count = val['count']
+      }
+    })    
+    $('#visitor-count').text(count)
+  }) 
+}
