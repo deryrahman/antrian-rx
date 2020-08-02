@@ -46,6 +46,9 @@ def authenticate_helper(f):
         if 'login' in session and session['login']:
             response = f(*args, **kwargs)
             return response
+        if request.headers.get('Client-Key') == os.environ['CLIENT_KEY']:
+            response = f(*args, **kwargs)
+            return response
         raise AbortException('not login')
     return decorated_function
 
@@ -81,7 +84,6 @@ class ResponseEntity():
 @app.route('/', methods=['GET'], strict_slashes=False)
 def home():
     remote_addr = request.remote_addr
-    print(remote_addr)
     if not counter_service.is_unique(remote_addr):
         counter_service.hit()
     return render_template('index.html')
@@ -169,8 +171,12 @@ def logout():
 @authenticate_helper
 def create_recipe():
     data = request.get_json()
-    recipe = recipe_service.create_recipe(
-        queue_number=data['queue_number'], user_id=session['username'])
+    if not data.get('queue_number'):
+        recipe = recipe_service.generate_recipe(
+            user_id=session.get('username'))
+    else:
+        recipe = recipe_service.create_recipe(
+            queue_number=data['queue_number'], user_id=session.get('username'))
     response = ResponseEntity(200, payload=recipe.to_json())
     return Response(json.dumps(response.to_json()),
                     status=response.status, mimetype='application/json')
@@ -192,6 +198,8 @@ def get_all_recipes():
 def get_recipe(queue_number):
     recipe = recipe_service.get_recipe(queue_number)
     response = ResponseEntity(200, payload=recipe.to_json())
+    if request.args.get('printable'):
+        return render_template('receipt.html', recipe=recipe)
     return Response(json.dumps(response.to_json()),
                     status=response.status, mimetype='application/json')
 

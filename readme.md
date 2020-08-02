@@ -18,6 +18,7 @@ RSUD Cilacap bagian farmasi
     - MONGO_DBNAME : (string) nama database mongodb, eg: 'test'
     - MONGO_URI : (string) uri mongodb, eg 'mongodb://{user}:{password}@localhost:27017/test'
     - SECRET_KEY : (string) secret key yang digunakan untuk applikasi, eg 'coba-coba'
+    - CLIENT_KEY : (string) key yang digunakan client desktop
 5. Untuk menjalankan aplikasi, jalankan gunicorn, run command:
     ```
     $ gunicorn server:app :8000 -n antrian-rx

@@ -10,6 +10,14 @@ from_zone = tz.gettz('UTC')
 to_zone = tz.gettz('Asia/Jakarta')
 
 
+def generate_recipe(user_id):
+    recipedb = mongo.db.recipes
+    cnt = len(get_all_recipes())
+    while recipedb.find_one({'queue_number': '{:03d}'.format(cnt)}):
+        cnt += 1
+    return create_recipe('{:03d}'.format(cnt), user_id)
+
+
 def create_recipe(queue_number, user_id):
     recipedb = mongo.db.recipes
     recipedb.create_index([('queue_number', pymongo.TEXT)], unique=True)
